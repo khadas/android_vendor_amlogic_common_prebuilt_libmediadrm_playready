@@ -15,6 +15,7 @@ LOCAL_MODULE_SUFFIX := .so
 LOCAL_SRC_FILES := mediadrm/TVP/libplayreadymediadrmplugin.so
 LOCAL_PROPRIETARY_MODULE := true
 LOCAL_STRIP_MODULE := false
+LOCAL_SHARED_LIBRARIES := libcutils liblog libplayready libssl libstagefright_foundation libutils
 
 LOCAL_32_BIT_ONLY := true
 LOCAL_MODULE_TAGS := optional
@@ -36,6 +37,7 @@ LOCAL_MODULE_SUFFIX := .so
 LOCAL_SRC_FILES := mediadrm/TVP/libplayready.so
 LOCAL_PROPRIETARY_MODULE := true
 LOCAL_STRIP_MODULE := false
+LOCAL_SHARED_LIBRARIES := libamavutils libcutils liblog libteec libutils
 
 LOCAL_32_BIT_ONLY := true
 LOCAL_MODULE_TAGS := optional
@@ -84,6 +86,7 @@ LOCAL_MODULE_SUFFIX := .so
 LOCAL_SRC_FILES := NOTVP/libplayreadymediadrmplugin.so
 LOCAL_PROPRIETARY_MODULE := true
 LOCAL_STRIP_MODULE := false
+LOCAL_SHARED_LIBRARIES := libcutils liblog libplayready libssl libstagefright_foundation libutils
 LOCAL_32_BIT_ONLY := true
 LOCAL_MODULE_TAGS := optional
 include $(BUILD_PREBUILT)
@@ -104,6 +107,7 @@ LOCAL_MODULE_SUFFIX := .so
 LOCAL_SRC_FILES := NOTVP/libplayready.so
 LOCAL_PROPRIETARY_MODULE := true
 LOCAL_STRIP_MODULE := false
+LOCAL_SHARED_LIBRARIES := libamavutils libcutils liblog libteec libutils
 
 LOCAL_32_BIT_ONLY := true
 LOCAL_MODULE_TAGS := optional
