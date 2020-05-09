@@ -1,6 +1,7 @@
 ifeq ($(BUILD_WITH_PLAYREADY_DRM), true)
 
 LOCAL_PATH:= $(call my-dir)
+
 ifeq ($(BOARD_PLAYREADY_TVP),true)
 #####################################################################
 # libplayreadydrmplugin.so
@@ -47,29 +48,36 @@ include $(BUILD_PREBUILT)
 
 #####################################################################
 include $(CLEAR_VARS)
-LOCAL_MODULE := 9a04f079-9840-4286-ab92e65be0885f95
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/lib/teetz
-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-LOCAL_MODULE_SUFFIX := .ta
-LOCAL_MODULE_TAGS := optional
-LOCAL_32_BIT_ONLY := true
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_STRIP_MODULE := false
+TA_UUID := 9a04f079-9840-4286-ab92e65be0885f95
+TA_SUFFIX := .ta
 
-PLAYREADY_UNSIGNED_TA := $(LOCAL_PATH)/mediadrm/TVP/9a04f079-9840-4286-ab92e65be0885f95.ta
-
-ifeq ($(TARGET_ENABLE_TA_SIGN), true)
-include $(BUILD_SYSTEM)/base_rules.mk
-$(LOCAL_BUILT_MODULE): $(PLAYREADY_UNSIGNED_TA)
-	@mkdir -p $(dir $@)
-	$(BOARD_AML_VENDOR_PATH)/tdk/ta_export/scripts/sign_ta_auto.py \
-		--in=$(PLAYREADY_UNSIGNED_TA) \
-		--out=$@ \
-		--keydir=$(BOARD_AML_TDK_KEY_PATH)
+ifeq ($(PLATFORM_TDK_VERSION), 38)
+PLATFORM_TDK_PATH := $(BOARD_AML_VENDOR_PATH)/tdk_v3
+LOCAL_TA :=  mediadrm/TVP/ta/v3/$(TA_UUID)$(TA_SUFFIX)
 else
-LOCAL_PREBUILT_MODULE_FILE := $(PLAYREADY_UNSIGNED_TA)
-include $(BUILD_PREBUILT)
+PLATFORM_TDK_PATH := $(BOARD_AML_VENDOR_PATH)/tdk
+LOCAL_TA :=  mediadrm/TVP/$(TA_UUID)$(TA_SUFFIX)
 endif
+
+ifeq ($(TARGET_ENABLE_TA_ENCRYPT), true)
+ENCRYPT := 1
+else
+ENCRYPT := 0
+endif
+
+LOCAL_SRC_FILES := $(LOCAL_TA)
+LOCAL_MODULE := $(TA_UUID)
+LOCAL_MODULE_SUFFIX := $(TA_SUFFIX)
+LOCAL_STRIP_MODULE := false
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/lib/teetz
+ifeq ($(TARGET_ENABLE_TA_SIGN), true)
+LOCAL_POST_INSTALL_CMD = $(PLATFORM_TDK_PATH)/ta_export/scripts/sign_ta_auto.py \
+		--in=$(shell pwd)/$(LOCAL_MODULE_PATH)/$(TA_UUID)$(LOCAL_MODULE_SUFFIX) \
+		--keydir=$(shell pwd)/$(BOARD_AML_TDK_KEY_PATH) \
+		--encrypt=$(ENCRYPT)
+endif
+include $(BUILD_PREBUILT)
 
 #####################################################################
 else
@@ -86,7 +94,7 @@ LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/lib/mediadrm
 
 LOCAL_MODULE_CLASS := SHARED_LIBRARIES
 LOCAL_MODULE_SUFFIX := .so
-LOCAL_SRC_FILES := NOTVP/libplayreadymediadrmplugin.so
+LOCAL_SRC_FILES := mediadrm/NOTVP/libplayreadymediadrmplugin.so
 LOCAL_PROPRIETARY_MODULE := true
 LOCAL_STRIP_MODULE := false
 LOCAL_SHARED_LIBRARIES := libcutils liblog libplayready libssl libstagefright_foundation libutils
@@ -107,7 +115,7 @@ LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/lib
 
 LOCAL_MODULE_CLASS := SHARED_LIBRARIES
 LOCAL_MODULE_SUFFIX := .so
-LOCAL_SRC_FILES := NOTVP/libplayready.so
+LOCAL_SRC_FILES := mediadrm/NOTVP/libplayready.so
 LOCAL_PROPRIETARY_MODULE := true
 LOCAL_STRIP_MODULE := false
 LOCAL_SHARED_LIBRARIES := libamavutils libcutils liblog libteec libutils
