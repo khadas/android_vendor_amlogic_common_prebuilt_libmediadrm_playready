@@ -2,6 +2,22 @@ ifeq ($(BUILD_WITH_PLAYREADY_DRM), true)
 
 LOCAL_PATH:= $(call my-dir)
 
+# -----------------------------------------------------------------------------
+# Builds android.hardware.drm@1.3-service.playready
+#
+ifneq (0, $(shell expr $(PLATFORM_SDK_VERSION) \>= 30))
+include $(CLEAR_VARS)
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := EXECUTABLES
+LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/bin/hw
+LOCAL_MODULE := android.hardware.drm@1.3-service.playready
+LOCAL_SRC_FILES := $(LOCAL_MODULE)
+LOCAL_INIT_RC := android.hardware.drm@1.3-service.playready.rc
+LOCAL_VINTF_FRAGMENTS := manifest_android.hardware.drm@1.3-service.playready.xml
+LOCAL_CHECK_ELF_FILES := false
+include $(BUILD_PREBUILT)
+endif
+
 ifeq ($(BOARD_PLAYREADY_TVP),true)
 #####################################################################
 # libplayreadydrmplugin.so
@@ -9,7 +25,11 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := libplayreadymediadrmplugin
 
 LOCAL_PROPRIETARY_MODULE := true
+ifneq (0, $(shell expr $(PLATFORM_SDK_VERSION) \>= 30))
+LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/lib/
+else
 LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/lib/mediadrm
+endif
 
 LOCAL_MODULE_CLASS := SHARED_LIBRARIES
 LOCAL_MODULE_SUFFIX := .so
@@ -17,7 +37,7 @@ LOCAL_SRC_FILES := mediadrm/TVP/libplayreadymediadrmplugin.so
 LOCAL_PROPRIETARY_MODULE := true
 LOCAL_STRIP_MODULE := false
 LOCAL_SHARED_LIBRARIES := libcutils liblog libplayready libssl libstagefright_foundation libutils
-
+LOCAL_CHECK_ELF_FILES := false
 LOCAL_32_BIT_ONLY := true
 LOCAL_MODULE_TAGS := optional
 include $(BUILD_PREBUILT)
