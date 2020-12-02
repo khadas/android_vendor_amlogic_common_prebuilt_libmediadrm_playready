@@ -68,7 +68,7 @@ include $(BUILD_PREBUILT)
 
 #####################################################################
 include $(CLEAR_VARS)
-TA_UUID := 9a04f079-9840-4286-ab92e65be0885f95
+TA_UUID := 9a04f079-9840-4286-ab92-e65be0885f95
 TA_SUFFIX := .ta
 
 ifeq ($(PLATFORM_TDK_VERSION), 38)
@@ -76,7 +76,7 @@ PLATFORM_TDK_PATH := $(BOARD_AML_VENDOR_PATH)/tdk_v3
 LOCAL_TA :=  mediadrm/TVP/ta/v3/$(TA_UUID)$(TA_SUFFIX)
 else
 PLATFORM_TDK_PATH := $(BOARD_AML_VENDOR_PATH)/tdk
-LOCAL_TA :=  mediadrm/TVP/$(TA_UUID)$(TA_SUFFIX)
+LOCAL_TA :=  mediadrm/TVP/ta/v2/$(TA_UUID)$(TA_SUFFIX)
 endif
 
 ifeq ($(TARGET_ENABLE_TA_ENCRYPT), true)
